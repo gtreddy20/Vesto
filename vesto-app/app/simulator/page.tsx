@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatCurrency, formatPercent } from '@/lib/utils/format';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -113,15 +113,19 @@ export default function SimulatorPage() {
   // Get authenticated user and load portfolio
   useEffect(() => {
     async function getUser() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserId(user?.id || null);
-      
-      if (user?.id) {
-        // Wait for companyData to load before loading portfolio
-        if (Object.keys(companyData).length > 0) {
-          loadPortfolio(user.id);
+      if (!isSupabaseConfigured()) return; // demo mode — no auth, userId stays null
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        setUserId(user?.id || null);
+
+        if (user?.id) {
+          if (Object.keys(companyData).length > 0) {
+            loadPortfolio(user.id);
+          }
         }
+      } catch {
+        // Supabase unavailable — proceed in demo mode
       }
     }
     getUser();
@@ -256,15 +260,6 @@ export default function SimulatorPage() {
       return;
     }
 
-    if (!userId) {
-      console.log('No user ID');
-      setFeedback({
-        status: 'rejected',
-        message: 'Please log in to submit a pitch.',
-      });
-      return;
-    }
-
     setIsSubmittingPitch(true);
     setFeedback(null); // Clear previous feedback
 
@@ -304,6 +299,7 @@ export default function SimulatorPage() {
           status: result.data.review.status,
           message: result.data.review.feedback,
           score: result.data.review.score,
+          criteria: result.data.review.criteria,
           submissionId: result.data.submission?.id
         });
         
@@ -426,8 +422,8 @@ export default function SimulatorPage() {
       {/* Column 1: Market & Portfolio */}
       <div className="lg:col-span-1 space-y-6">
         <div>
-          <h2 className="mb-4 text-2xl font-semibold tracking-tight">Market</h2>
-          <Card className="max-h-[600px] overflow-y-auto">
+          <h2 className="mb-3 text-xl font-semibold tracking-tight text-foreground">Market</h2>
+          <Card className="max-h-[600px] overflow-y-auto shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -464,8 +460,8 @@ export default function SimulatorPage() {
                           setPitch('');
                           setShowAllMetrics(false);
                         }}
-                        className={`cursor-pointer ${
-                          selectedSymbol === company.symbol ? 'bg-zinc-100 dark:bg-zinc-800' : ''
+                        className={`cursor-pointer transition-colors ${
+                          selectedSymbol === company.symbol ? 'bg-accent-sage' : 'hover:bg-muted-bg'
                         }`}
                       >
                         <TableCell>
@@ -491,7 +487,7 @@ export default function SimulatorPage() {
           </Card>
         </div>
 
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle>My Portfolio</CardTitle>
             <CardDescription>
@@ -551,8 +547,8 @@ export default function SimulatorPage() {
         {selectedStock ? (
           <>
             <div>
-              <h2 className="mb-4 text-2xl font-semibold tracking-tight">Details</h2>
-              <Card>
+              <h2 className="mb-3 text-xl font-semibold tracking-tight text-foreground">Details</h2>
+              <Card className="shadow-sm">
                 <CardHeader>
                   <CardTitle>
                     {selectedStock.name} ({selectedStock.symbol})
@@ -737,10 +733,9 @@ export default function SimulatorPage() {
                             const previousRevenue = index > 0 ? revenueData[index - 1].revenue : null;
                             const isTrendingUp = previousRevenue !== null ? data.revenue > previousRevenue : true; // First bar defaults to up
                             
-                            // Use pastel colors matching the website theme
-                            const barColor = isTrendingUp 
-                              ? 'bg-[#b4d4b4] hover:bg-[#a0c5a0]' // Pastel green (matches --primary)
-                              : 'bg-[#f4a5a5] hover:bg-[#e89595]'; // Pastel red
+                            const barColor = isTrendingUp
+                              ? 'bg-primary hover:bg-primary-hover'
+                              : 'bg-[#f4a5a5] hover:bg-[#e89595]';
                             
                             return (
                               <div key={`${data.year}-${data.quarter}`} className="flex-1 flex flex-col justify-end items-center h-full">
@@ -779,8 +774,8 @@ export default function SimulatorPage() {
             </div>
 
             <div>
-              <h2 className="mb-4 text-2xl font-semibold tracking-tight">AI Fund Manager</h2>
-              <Card>
+              <h2 className="mb-3 text-xl font-semibold tracking-tight text-foreground">AI Fund Manager</h2>
+              <Card className="shadow-sm">
                 <CardHeader>
                   <CardTitle>Pitch: {selectedStock.name} ({selectedStock.symbol})</CardTitle>
                   <CardDescription>
@@ -803,50 +798,139 @@ export default function SimulatorPage() {
                   </Button>
 
                   {feedback && (
-                    <Card className="mt-4">
-                      <CardHeader>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={feedback.status === 'approved' ? 'default' : 'destructive'}>
-                            {feedback.status}
-                          </Badge>
-                          <CardTitle className="text-lg">AI Portfolio Manager Feedback</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <p className="text-sm">{feedback.message}</p>
-                        
-                        {feedback.status === 'approved' && selectedStock && (
-                          <div className="pt-4 border-t space-y-4">
-                            <div>
-                              <Label htmlFor="investmentAmount" className="text-sm font-medium">
-                                Investment Amount (Available: {formatCurrency(availableCash)})
-                              </Label>
-                              <div className="flex gap-2 mt-2">
-                                <Input
-                                  id="investmentAmount"
-                                  type="number"
-                                  placeholder="Enter amount"
-                                  value={investmentAmount}
-                                  onChange={(e) => setInvestmentAmount(e.target.value)}
-                                  min="0"
-                                  max={availableCash}
-                                  step="0.01"
-                                  disabled={isInvesting}
-                                />
-                                <Button 
-                                  onClick={handleInvest}
-                                  disabled={isInvesting || !investmentAmount || parseFloat(investmentAmount) <= 0}
-                                  className="whitespace-nowrap"
-                                >
-                                  {isInvesting ? 'Investing...' : 'Invest'}
-                                </Button>
-                              </div>
-                              {investmentAmount && parseFloat(investmentAmount) > 0 && selectedStock.price > 0 && (
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  You'll buy approximately {Math.floor(parseFloat(investmentAmount) / selectedStock.price)} shares at {formatCurrency(selectedStock.price)} per share
-                                </p>
-                              )}
+                    <Card className={`mt-4 overflow-hidden ${
+                      feedback.status === 'approved'
+                        ? 'border-[#9cc09c] dark:border-[#5a7a5e]'
+                        : 'border-[#e0c8b8] dark:border-[#5a4a3a]'
+                    }`}>
+                      {/* Verdict banner */}
+                      <div className={`px-6 py-5 ${
+                        feedback.status === 'approved'
+                          ? 'bg-[#d4e4d8] dark:bg-[#2a3a2e]'
+                          : 'bg-[#f4e8e0] dark:bg-[#3a2e28]'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${
+                              feedback.status === 'approved'
+                                ? 'text-[#4a6a4e] dark:text-[#8fb48f]'
+                                : 'text-[#8a5a3a] dark:text-[#c49a7a]'
+                            }`}>
+                              AI Fund Manager · Verdict
+                            </p>
+                            <p className={`text-2xl font-bold capitalize ${
+                              feedback.status === 'approved'
+                                ? 'text-[#2a4a2e] dark:text-[#a0c5a0]'
+                                : 'text-[#6a3a1a] dark:text-[#d4a484]'
+                            }`}>
+                              {feedback.status === 'approved' ? '✓ Approved' : '✕ Rejected'}
+                            </p>
+                          </div>
+                          {feedback.score !== undefined && (
+                            <div className="text-right">
+                              <p className={`text-4xl font-bold tabular-nums ${
+                                feedback.status === 'approved'
+                                  ? 'text-[#2a4a2e] dark:text-[#a0c5a0]'
+                                  : 'text-[#6a3a1a] dark:text-[#d4a484]'
+                              }`}>
+                                {feedback.score}
+                              </p>
+                              <p className={`text-xs font-medium ${
+                                feedback.status === 'approved'
+                                  ? 'text-[#4a6a4e] dark:text-[#8fb48f]'
+                                  : 'text-[#8a5a3a] dark:text-[#c49a7a]'
+                              }`}>
+                                out of 100
+                              </p>
                             </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <CardContent className="pt-5 space-y-5">
+                        {/* Criteria breakdown */}
+                        {feedback.criteria && (
+                          <div className="space-y-2">
+                            {([
+                              { key: 'business_understanding', label: 'Business Understanding' },
+                              { key: 'financial_analysis',     label: 'Financial Analysis' },
+                              { key: 'risk_assessment',        label: 'Risk Assessment' },
+                              { key: 'investment_thesis',      label: 'Investment Thesis' },
+                            ] as const).map(({ key, label }) => {
+                              const criterion = feedback.criteria[key];
+                              const pct = (criterion.score / 25) * 100;
+                              return (
+                                <div key={key} className="space-y-1">
+                                  <div className="flex justify-between items-baseline">
+                                    <span className="text-xs font-medium text-muted-foreground">{label}</span>
+                                    <span className="text-xs font-semibold tabular-nums">{criterion.score}<span className="text-muted-foreground font-normal">/25</span></span>
+                                  </div>
+                                  <div className="h-1.5 rounded-full bg-[#e8e6e3] dark:bg-[#3a3a38] overflow-hidden">
+                                    <div
+                                      className={`h-full rounded-full transition-all ${
+                                        pct >= 70
+                                          ? 'bg-[#b4d4b4] dark:bg-[#8fb48f]'
+                                          : pct >= 40
+                                          ? 'bg-[#e8d4a4] dark:bg-[#a89464]'
+                                          : 'bg-[#e8b4a4] dark:bg-[#c48474]'
+                                      }`}
+                                      style={{ width: `${pct}%` }}
+                                    />
+                                  </div>
+                                  <p className="text-xs text-muted-foreground leading-snug">{criterion.comment}</p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Overall feedback */}
+                        <div className={feedback.criteria ? 'pt-4 border-t' : ''}>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                            {feedback.status === 'approved' ? 'Summary' : 'How to Improve'}
+                          </p>
+                          <p className="text-sm leading-relaxed">{feedback.message}</p>
+                        </div>
+
+                        {!userId && (
+                          <p className="text-xs text-muted-foreground border-t pt-4">
+                            Log in to save your pitch history and invest with your virtual portfolio.
+                          </p>
+                        )}
+
+                        {feedback.status === 'approved' && selectedStock && userId && (
+                          <div className="pt-4 border-t space-y-3">
+                            <Label htmlFor="investmentAmount" className="text-sm font-medium">
+                              Investment Amount{' '}
+                              <span className="font-normal text-muted-foreground">
+                                (Available: {formatCurrency(availableCash)})
+                              </span>
+                            </Label>
+                            <div className="flex gap-2">
+                              <Input
+                                id="investmentAmount"
+                                type="number"
+                                placeholder="Enter amount"
+                                value={investmentAmount}
+                                onChange={(e) => setInvestmentAmount(e.target.value)}
+                                min="0"
+                                max={availableCash}
+                                step="0.01"
+                                disabled={isInvesting}
+                              />
+                              <Button
+                                onClick={handleInvest}
+                                disabled={isInvesting || !investmentAmount || parseFloat(investmentAmount) <= 0}
+                                className="whitespace-nowrap bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] border border-[#9cc09c] dark:bg-[#8fb48f] dark:text-[#1a1a18]"
+                              >
+                                {isInvesting ? 'Investing...' : 'Invest'}
+                              </Button>
+                            </div>
+                            {investmentAmount && parseFloat(investmentAmount) > 0 && selectedStock.price > 0 && (
+                              <p className="text-xs text-muted-foreground">
+                                ≈ {Math.floor(parseFloat(investmentAmount) / selectedStock.price)} shares at {formatCurrency(selectedStock.price)} per share
+                              </p>
+                            )}
                           </div>
                         )}
                       </CardContent>

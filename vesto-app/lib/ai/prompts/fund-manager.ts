@@ -37,7 +37,13 @@ Return response as JSON:
 {
   "status": "approved" or "rejected",
   "score": <number 0-100>,
-  "feedback": "<2-3 sentences explaining decision with specific areas to improve if rejected>"
+  "feedback": "<2-3 sentences explaining decision with specific areas to improve if rejected>",
+  "criteria": {
+    "business_understanding": { "score": <0-25>, "comment": "<one sentence>" },
+    "financial_analysis":     { "score": <0-25>, "comment": "<one sentence>" },
+    "risk_assessment":        { "score": <0-25>, "comment": "<one sentence>" },
+    "investment_thesis":      { "score": <0-25>, "comment": "<one sentence>" }
+  }
 }
 `;
 

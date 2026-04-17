@@ -1,10 +1,21 @@
 import { generateJSON } from './gemini-client';
 import { buildPitchReviewPrompt } from './prompts/fund-manager';
 
-interface PitchReview {
+interface CriterionScore {
+  score: number;
+  comment: string;
+}
+
+export interface PitchReview {
   status: 'approved' | 'rejected';
   score: number;
   feedback: string;
+  criteria?: {
+    business_understanding: CriterionScore;
+    financial_analysis: CriterionScore;
+    risk_assessment: CriterionScore;
+    investment_thesis: CriterionScore;
+  };
 }
 
 export async function reviewPitch(

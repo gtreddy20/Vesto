@@ -42,20 +42,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setLoading(true);
     setErrors({});
 
     try {
       const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         setErrors({ general: error.message });
@@ -64,20 +59,11 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Create or update user profile in users table
-        const { error: profileError } = await supabase
-          .from('users')
-          .upsert({
-            id: data.user.id,
-            email: data.user.email!,
-            updated_at: new Date().toISOString()
-          }, {
-            onConflict: 'id'
-          });
-
-        if (profileError) {
-          console.error('Error updating user profile:', profileError);
-        }
+        await supabase.from('users').upsert({
+          id: data.user.id,
+          email: data.user.email!,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
 
         router.push('/account');
         router.refresh();
@@ -91,25 +77,23 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-      <Card className="w-full max-w-md border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422]">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-[#2d2d2d] dark:text-[#e8e6e3]">Login</CardTitle>
-          <CardDescription className="text-[#6a6a6a] dark:text-[#9a9a98]">
+      <Card className="w-full max-w-md border-border bg-card shadow-lg">
+        <CardHeader className="space-y-1 pb-6">
+          <CardTitle className="text-2xl font-bold text-foreground">Welcome back</CardTitle>
+          <CardDescription>
             Enter your email and password to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {errors.general && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-md">
+              <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800">
                 {errors.general}
               </div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[#2d2d2d] dark:text-[#e8e6e3]">
-                Email
-              </Label>
+              <Label htmlFor="email" className="text-foreground font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -122,15 +106,11 @@ export default function LoginPage() {
                 className={errors.email ? 'border-red-500' : ''}
                 disabled={loading}
               />
-              {errors.email && (
-                <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[#2d2d2d] dark:text-[#e8e6e3]">
-                Password
-              </Label>
+              <Label htmlFor="password" className="text-foreground font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -143,29 +123,26 @@ export default function LoginPage() {
                 className={errors.password ? 'border-red-500' : ''}
                 disabled={loading}
               />
-              {errors.password && (
-                <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] font-medium border border-[#9cc09c] dark:bg-[#8fb48f] dark:hover:bg-[#a0c5a0] dark:text-[#1a1a18]"
+              className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold border border-primary-border mt-2"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Logging in…' : 'Login'}
             </Button>
 
-            <div className="text-center text-sm text-[#6a6a6a] dark:text-[#9a9a98]">
-              Don't have an account?{' '}
-              <Link href="/signup" className="text-[#5a7a5e] dark:text-[#8fb48f] hover:underline">
+            <p className="text-center text-sm text-muted-foreground pt-1">
+              Don&apos;t have an account?{' '}
+              <Link href="/signup" className="text-primary-text hover:underline font-medium">
                 Sign up
               </Link>
-            </div>
+            </p>
           </form>
         </CardContent>
       </Card>
     </div>
   );
 }
-

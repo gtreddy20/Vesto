@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Sparkles, BookOpen, LineChart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Vesto - Financial Literacy Platform",
@@ -19,29 +19,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.variable}>
         <div className="flex min-h-screen">
-          {/* Sidebar - Desktop */}
-          <nav className="hidden w-64 border-r bg-[#fafaf8] p-4 dark:border-[#3a3a38] dark:bg-[#1a1a18] md:block">
-            <Link href="/" className="flex items-center gap-2 pb-4 mb-4 border-b border-[#e0ddd8] dark:border-[#3a3a38]">
-              <Sparkles className="h-6 w-6 text-[#b4d4b4] dark:text-[#8fb48f]" />
-              <h1 className="text-xl font-bold text-[#2d2d2d] dark:text-[#e8e6e3]">Vesto</h1>
+          {/* Sidebar — Desktop */}
+          <nav className="hidden w-64 shrink-0 border-r border-border bg-background shadow-sm md:flex md:flex-col p-5">
+            <Link href="/" className="flex items-center gap-2 pb-5 mb-5 border-b border-border">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h1 className="text-lg font-bold tracking-tight text-foreground">Vesto</h1>
             </Link>
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Link href="/learn">
-                <Button variant="ghost" className="w-full justify-start gap-2 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+                <Button variant="ghost" className="w-full justify-start gap-2.5 text-sm font-medium hover:bg-muted-bg text-foreground">
                   <BookOpen className="h-4 w-4" />
                   Learn
                 </Button>
               </Link>
               <Link href="/simulator">
-                <Button variant="ghost" className="w-full justify-start gap-2 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+                <Button variant="ghost" className="w-full justify-start gap-2.5 text-sm font-medium hover:bg-muted-bg text-foreground">
                   <LineChart className="h-4 w-4" />
                   Simulator
                 </Button>
               </Link>
               <Link href="/account">
-                <Button variant="ghost" className="w-full justify-start gap-2 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+                <Button variant="ghost" className="w-full justify-start gap-2.5 text-sm font-medium hover:bg-muted-bg text-foreground">
                   <User className="h-4 w-4" />
                   Account
                 </Button>
@@ -50,28 +50,28 @@ export default function RootLayout({
           </nav>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 lg:p-10 pb-24 md:pb-6">
+          <main className="flex-1 p-6 lg:p-10 pb-24 md:pb-8 min-w-0">
             {children}
           </main>
 
-          {/* Bottom Nav - Mobile */}
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 z-10 flex justify-around border-t bg-white p-2 dark:border-[#3a3a38] dark:bg-[#1a1a18]">
+          {/* Bottom Nav — Mobile */}
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 z-10 flex justify-around border-t border-border bg-card shadow-lg p-1">
             <Link href="/learn" className="flex-1">
-              <Button variant="ghost" className="w-full flex-col h-16 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+              <Button variant="ghost" className="w-full flex-col h-16 gap-1 hover:bg-muted-bg text-foreground">
                 <BookOpen className="h-5 w-5" />
-                <span className="text-xs">Learn</span>
+                <span className="text-xs font-medium">Learn</span>
               </Button>
             </Link>
             <Link href="/simulator" className="flex-1">
-              <Button variant="ghost" className="w-full flex-col h-16 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+              <Button variant="ghost" className="w-full flex-col h-16 gap-1 hover:bg-muted-bg text-foreground">
                 <LineChart className="h-5 w-5" />
-                <span className="text-xs">Simulator</span>
+                <span className="text-xs font-medium">Simulator</span>
               </Button>
             </Link>
             <Link href="/account" className="flex-1">
-              <Button variant="ghost" className="w-full flex-col h-16 hover:bg-[#f5f4f2] dark:hover:bg-[#222220] text-[#2d2d2d] dark:text-[#e8e6e3]">
+              <Button variant="ghost" className="w-full flex-col h-16 gap-1 hover:bg-muted-bg text-foreground">
                 <User className="h-5 w-5" />
-                <span className="text-xs">Account</span>
+                <span className="text-xs font-medium">Account</span>
               </Button>
             </Link>
           </nav>

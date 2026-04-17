@@ -109,8 +109,8 @@ export default function LearnPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#2d2d2d] dark:text-[#e8e6e3]">Learning Modules</h1>
-        <p className="text-[#6a6a6a] dark:text-[#9a9a98] mt-2">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Learning Modules</h1>
+        <p className="text-muted-foreground mt-1">
           From basic definitions to expert-level comparative analysis.
         </p>
       </div>
@@ -120,32 +120,32 @@ export default function LearnPage() {
           const progressData = progressMap[module.id];
           const progress = progressData?.completion_percentage || 0;
           const levelColors = {
-            easy: "bg-[#d4e4d8] text-[#2d2d2d] border-[#b4d4b4]",
-            intermediate: "bg-[#f4d5c6] text-[#2d2d2d] border-[#e4c5b6]",
-            advanced: "bg-[#e6dfe6] text-[#2d2d2d] border-[#d6cfd6]",
-            expert: "bg-[#f4d5c6] text-[#2d2d2d] border-[#e4c5b6]"
+            easy:         "bg-accent-sage text-foreground border-primary-border",
+            intermediate: "bg-accent-peach text-foreground border-[#e4c5b6]",
+            advanced:     "bg-accent-lavender text-foreground border-[#d6cfd6]",
+            expert:       "bg-accent-peach text-foreground border-[#e4c5b6]",
           };
 
           return (
-            <Card key={module.id} className="flex flex-col hover:shadow-md transition-shadow border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422]">
+            <Card key={module.id} className="flex flex-col shadow-sm hover:shadow-md transition-shadow border-border bg-card">
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="text-xl text-[#2d2d2d] dark:text-[#e8e6e3]">{module.title}</CardTitle>
-                  <Badge className={`${levelColors[module.level]} capitalize shrink-0`}>
+                  <CardTitle className="text-lg text-foreground">{module.title}</CardTitle>
+                  <Badge className={`${levelColors[module.level]} capitalize shrink-0 text-xs font-medium`}>
                     {module.level}
                   </Badge>
                 </div>
-                <CardDescription className="mt-2 text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">{module.description}</CardDescription>
+                <CardDescription className="mt-1 leading-relaxed">{module.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow space-y-2">
-                <Progress value={progress} className="bg-[#f5f4f2] dark:bg-[#222220]" />
-                <p className="text-sm text-[#6a6a6a] dark:text-[#9a9a98]">
-                  {loading ? 'Loading...' : `${progress}% complete`}
+                <Progress value={progress} className="bg-muted-bg h-1.5" />
+                <p className="text-sm text-muted-foreground">
+                  {loading ? 'Loading…' : `${progress}% complete`}
                 </p>
               </CardContent>
               <CardFooter>
                 <Link href={`/learn/${module.id}`} className="w-full">
-                  <Button className="w-full bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] font-medium border border-[#9cc09c] dark:bg-[#8fb48f] dark:hover:bg-[#a0c5a0] dark:text-[#1a1a18]">
+                  <Button className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold border border-primary-border">
                     {progress === 0 ? 'Start Module' : 'Continue Module'}
                   </Button>
                 </Link>

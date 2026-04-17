@@ -6,91 +6,98 @@ import { BookOpen, LineChart, TrendingUp, Award, LogIn, UserPlus } from "lucide-
 export default function Home() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      {/* Login/Signup Buttons */}
+      {/* Auth buttons */}
       <div className="flex justify-end gap-3 pt-4">
         <Link href="/login">
-          <Button
-            variant="outline"
-            className="gap-2 border-[#e0ddd8] hover:bg-[#f5f4f2] text-[#2d2d2d] dark:border-[#3a3a38] dark:hover:bg-[#222220] dark:text-[#e8e6e3]"
-          >
+          <Button variant="outline" className="gap-2 border-border hover:bg-muted-bg text-foreground">
             <LogIn className="h-4 w-4" />
             Login
           </Button>
         </Link>
         <Link href="/signup">
-          <Button
-            className="gap-2 bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] font-medium border border-[#9cc09c] dark:bg-[#8fb48f] dark:hover:bg-[#a0c5a0] dark:text-[#1a1a18]"
-          >
+          <Button className="gap-2 bg-primary hover:bg-primary-hover text-primary-foreground font-semibold border border-primary-border">
             <UserPlus className="h-4 w-4" />
             Sign Up
           </Button>
         </Link>
       </div>
 
-      {/* Hero Section */}
-      <div className="text-center space-y-6 py-16">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#2d2d2d] dark:text-[#e8e6e3]">
-          Master Financial Analysis
-        </h1>
-        <p className="text-xl text-[#6a6a6a] dark:text-[#9a9a98] max-w-2xl mx-auto leading-relaxed">
-          Learn to analyze companies through interactive modules and practice with our AI-powered stock simulator
-        </p>
-        <div className="flex gap-4 justify-center pt-6">
+      {/* Hero */}
+      <div className="text-center py-20 md:py-28 space-y-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-sage text-primary-text text-sm font-medium tracking-wide">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-text" />
+          AI-Powered Financial Training
+        </div>
+
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] text-foreground">
+            Earn the Right<br className="hidden sm:block" /> to Trade
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-normal">
+            Most simulators let you invest blindly. Vesto doesn&apos;t. Write your analysis, pitch it to an AI Fund Manager, and score 70+ before you can touch a position.
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
           <Link href="/learn">
-            <Button 
-              size="lg" 
-              className="gap-2 bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] font-medium shadow-sm border border-[#9cc09c] dark:bg-[#8fb48f] dark:hover:bg-[#a0c5a0] dark:text-[#1a1a18]"
+            <Button
+              size="lg"
+              className="gap-2 bg-primary hover:bg-primary-hover text-primary-foreground font-semibold shadow-sm border border-primary-border px-8"
             >
               <BookOpen className="h-5 w-5" />
-              Start Your Journey
+              Start Learning
             </Button>
           </Link>
           <Link href="/simulator">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="gap-2 border-[#e0ddd8] hover:bg-[#f5f4f2] text-[#2d2d2d] dark:border-[#3a3a38] dark:hover:bg-[#222220] dark:text-[#e8e6e3]"
+            <Button
+              size="lg"
+              variant="outline"
+              className="gap-2 border-border hover:bg-muted-bg text-foreground px-8"
             >
               <LineChart className="h-5 w-5" />
-              Try Simulator
+              Try the Simulator
             </Button>
           </Link>
         </div>
+
+        <p className="text-sm text-muted-foreground">
+          20 real companies · $10,000 virtual portfolio · Real AI feedback
+        </p>
       </div>
 
-      {/* Features */}
-      <div className="grid md:grid-cols-3 gap-6 py-8">
-        <Card className="border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422] hover:shadow-md transition-shadow">
+      {/* Feature cards */}
+      <div className="grid md:grid-cols-3 gap-6 py-4">
+        <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#d4e4d8] dark:bg-[#3a4a3e] flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-[#5a7a5e] dark:text-[#8fb48f]" />
+            <div className="w-12 h-12 rounded-xl bg-accent-sage flex items-center justify-center">
+              <BookOpen className="h-6 w-6 text-primary-text" />
             </div>
-            <CardTitle className="text-[#2d2d2d] dark:text-[#e8e6e3]">Interactive Modules</CardTitle>
-            <CardDescription className="text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
+            <CardTitle className="text-foreground">Interactive Modules</CardTitle>
+            <CardDescription className="leading-relaxed">
               Learn fundamentals, 10-K analysis, and competitive analysis through structured lessons
             </CardDescription>
           </CardHeader>
         </Card>
 
-        <Card className="border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422] hover:shadow-md transition-shadow">
+        <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#f4d5c6] dark:bg-[#4a3a32] flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-[#8a6a5a] dark:text-[#d4a494]" />
+            <div className="w-12 h-12 rounded-xl bg-accent-peach flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-[#8a6a5a]" />
             </div>
-            <CardTitle className="text-[#2d2d2d] dark:text-[#e8e6e3]">AI-Powered Feedback</CardTitle>
-            <CardDescription className="text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
+            <CardTitle className="text-foreground">AI-Powered Feedback</CardTitle>
+            <CardDescription className="leading-relaxed">
               Get detailed, rubric-based feedback on your analysis from our AI grading system
             </CardDescription>
           </CardHeader>
         </Card>
 
-        <Card className="border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422] hover:shadow-md transition-shadow">
+        <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#e6dfe6] dark:bg-[#3a343a] flex items-center justify-center">
-              <Award className="h-6 w-6 text-[#7a6a7a] dark:text-[#b6a6b6]" />
+            <div className="w-12 h-12 rounded-xl bg-accent-lavender flex items-center justify-center">
+              <Award className="h-6 w-6 text-[#7a6a7a]" />
             </div>
-            <CardTitle className="text-[#2d2d2d] dark:text-[#e8e6e3]">Stock Simulator</CardTitle>
-            <CardDescription className="text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
+            <CardTitle className="text-foreground">Stock Simulator</CardTitle>
+            <CardDescription className="leading-relaxed">
               Pitch stocks to our AI Fund Manager and build a paper trading portfolio
             </CardDescription>
           </CardHeader>
@@ -98,71 +105,63 @@ export default function Home() {
       </div>
 
       {/* How It Works */}
-      <Card className="border-[#e0ddd8] dark:border-[#3a3a38] bg-white dark:bg-[#242422] py-6">
+      <Card className="border-border bg-card shadow-sm py-2">
         <CardHeader>
-          <CardTitle className="text-[#2d2d2d] dark:text-[#e8e6e3]">How Vesto Works</CardTitle>
+          <CardTitle className="text-foreground text-xl">How Vesto Works</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#d4e4d8] dark:bg-[#3a4a3e] text-[#2d2d2d] dark:text-[#e8e6e3] flex items-center justify-center font-bold text-lg">
-              1
+          {[
+            {
+              num: "1",
+              bg: "bg-accent-sage",
+              title: "Learn the Fundamentals",
+              body: "Start with Module 1 to understand P/E ratios, EBITDA, ROE, and other key metrics",
+            },
+            {
+              num: "2",
+              bg: "bg-accent-peach",
+              title: "Analyze Real Companies",
+              body: "Practice analyzing 20 major companies using real financial data and mock 10-K reports",
+            },
+            {
+              num: "3",
+              bg: "bg-accent-lavender",
+              title: "Get AI Feedback",
+              body: "Receive detailed feedback on your analysis scored across 5 criteria worth 100 points",
+            },
+            {
+              num: "4",
+              bg: "bg-secondary",
+              title: "Test Your Skills",
+              body: "Pitch stocks to our AI Fund Manager and build a paper trading portfolio with $10,000",
+            },
+          ].map(({ num, bg, title, body }) => (
+            <div key={num} className="flex gap-4">
+              <div className={`shrink-0 w-10 h-10 rounded-full ${bg} text-foreground flex items-center justify-center font-bold text-base`}>
+                {num}
+              </div>
+              <div className="flex-1 pt-1.5">
+                <h3 className="font-semibold mb-1 text-foreground">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-[#2d2d2d] dark:text-[#e8e6e3]">Learn the Fundamentals</h3>
-              <p className="text-sm text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
-                Start with Module 1 to understand P/E ratios, EBITDA, ROE, and other key metrics
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#f4d5c6] dark:bg-[#4a3a32] text-[#2d2d2d] dark:text-[#e8e6e3] flex items-center justify-center font-bold text-lg">
-              2
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-[#2d2d2d] dark:text-[#e8e6e3]">Analyze Real Companies</h3>
-              <p className="text-sm text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
-                Practice analyzing 20 major companies using real financial data and mock 10-K reports
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#e6dfe6] dark:bg-[#3a343a] text-[#2d2d2d] dark:text-[#e8e6e3] flex items-center justify-center font-bold text-lg">
-              3
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-[#2d2d2d] dark:text-[#e8e6e3]">Get AI Feedback</h3>
-              <p className="text-sm text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
-                Receive detailed feedback on your analysis scored across 5 criteria worth 100 points
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#e8e6e3] dark:bg-[#2d2d2b] text-[#2d2d2d] dark:text-[#e8e6e3] flex items-center justify-center font-bold text-lg">
-              4
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-[#2d2d2d] dark:text-[#e8e6e3]">Test Your Skills</h3>
-              <p className="text-sm text-[#6a6a6a] dark:text-[#9a9a98] leading-relaxed">
-                Pitch stocks to our AI Fund Manager and build a paper trading portfolio with $10,000
-              </p>
-            </div>
-          </div>
+          ))}
         </CardContent>
       </Card>
 
       {/* CTA */}
-      <Card className="bg-[#d4e4d8] dark:bg-[#3a4a3e] border-[#b4d4b4] dark:border-[#5a7a5e]">
-        <CardContent className="py-12 text-center">
-          <h2 className="text-3xl font-bold mb-4 text-[#2d2d2d] dark:text-[#e8e6e3]">Ready to Get Started?</h2>
-          <p className="text-lg mb-8 text-[#4a4a4a] dark:text-[#b8b8b8]">
-            Join Vesto and start mastering financial analysis today
+      <Card className="border-primary-border bg-accent-sage shadow-sm">
+        <CardContent className="py-14 text-center">
+          <h2 className="text-3xl font-bold mb-3 text-foreground">Ready to Make the Case?</h2>
+          <p className="text-lg mb-8 text-muted-foreground">
+            Learn the fundamentals, pitch your thesis, earn your trade.
           </p>
           <Link href="/learn">
-            <Button 
-              size="lg" 
-              className="bg-[#b4d4b4] hover:bg-[#a0c5a0] text-[#2d2d2d] font-medium shadow-sm border border-[#9cc09c] dark:bg-[#8fb48f] dark:hover:bg-[#a0c5a0] dark:text-[#1a1a18]"
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold shadow-sm border border-primary-border px-8"
             >
-              Begin Your Journey
+              Start Learning
             </Button>
           </Link>
         </CardContent>

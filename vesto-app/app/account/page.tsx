@@ -23,7 +23,6 @@ export default function AccountPage() {
         return;
       }
 
-      // Fetch user profile from users table
       let userProfile = null;
       const { data: profileData, error: fetchError } = await supabase
         .from('users')
@@ -32,7 +31,6 @@ export default function AccountPage() {
         .single();
 
       if (fetchError && fetchError.code === 'PGRST116') {
-        // Profile doesn't exist, create it
         const { data: newProfile, error: createError } = await supabase
           .from('users')
           .insert({
@@ -46,7 +44,7 @@ export default function AccountPage() {
           .single();
 
         if (createError) {
-          console.error('Error creating user profile in account page:', createError);
+          console.error('Error creating user profile:', createError);
         } else {
           userProfile = newProfile;
         }
@@ -61,7 +59,6 @@ export default function AccountPage() {
         email: authUser.email || userProfile?.email || null
       });
 
-      // Fetch pitch stats from Supabase
       try {
         const pitchStats = await getPitchStats(authUser.id);
         setStats({
@@ -69,9 +66,8 @@ export default function AccountPage() {
           approved: pitchStats.approvedPitches,
           accuracy: pitchStats.approvalRate
         });
-      } catch (error) {
-        console.error('Error fetching pitch stats:', error);
-        // Keep default stats (0, 0, 0) on error
+      } catch {
+        // Keep default stats on error
       }
 
       setLoading(false);
@@ -82,72 +78,68 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-6 max-w-2xl">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Account</h1>
-          <p className="text-muted-foreground">Loading...</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Account</h1>
+          <p className="text-muted-foreground mt-1">Loading…</p>
         </div>
       </div>
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Account</h1>
-        <p className="text-muted-foreground">
-          Manage your profile and settings.
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Account</h1>
+        <p className="text-muted-foreground mt-1">Manage your profile and settings.</p>
       </div>
 
-      <Card>
+      <Card className="border-border bg-card shadow-sm">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle className="text-foreground">Profile</CardTitle>
           <CardDescription>This is how your profile appears</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Name</p>
-            <p className="text-lg">{user.name || 'Not set'}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Name</p>
+            <p className="text-base font-medium text-foreground">{user.name || 'Not set'}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Email</p>
-            <p className="text-lg">{user.email || 'Not set'}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
+            <p className="text-base font-medium text-foreground">{user.email || 'Not set'}</p>
           </div>
         </CardContent>
         <CardFooter>
-          <Button variant="outline">Edit Profile</Button>
+          <Button variant="outline" className="border-border hover:bg-muted-bg text-foreground">
+            Edit Profile
+          </Button>
         </CardFooter>
       </Card>
 
-      <Card>
+      <Card className="border-border bg-card shadow-sm">
         <CardHeader>
-          <CardTitle>Simulator Stats</CardTitle>
+          <CardTitle className="text-foreground">Simulator Stats</CardTitle>
           <CardDescription>Your performance with the AI Fund Manager</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-xs text-muted-foreground">Pitches Made</p>
-              <p className="text-2xl font-semibold">{stats.pitches}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="flex flex-col items-center justify-center p-5 rounded-xl bg-muted-bg text-center gap-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pitches Made</p>
+              <p className="text-4xl font-bold text-foreground tabular-nums">{stats.pitches}</p>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Pitches Approved</p>
-              <p className="text-2xl font-semibold">{stats.approved}</p>
+            <div className="flex flex-col items-center justify-center p-5 rounded-xl bg-accent-sage text-center gap-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary-text">Approved</p>
+              <p className="text-4xl font-bold text-foreground tabular-nums">{stats.approved}</p>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Approval Rate</p>
-              <p className="text-2xl font-semibold">{stats.accuracy}%</p>
+            <div className="flex flex-col items-center justify-center p-5 rounded-xl bg-muted-bg text-center gap-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Approval Rate</p>
+              <p className="text-4xl font-bold text-foreground tabular-nums">{stats.accuracy}%</p>
             </div>
           </div>
         </CardContent>
       </Card>
-
     </div>
   );
 }
-
